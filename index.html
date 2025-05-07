@@ -3,31 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Script de FAQ - Scroll Automático Inteligente</title>
+  <title>Script de Seções - Scroll Automático Inteligente</title>
 </head>
 <body>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      const url = new URL(window.location.href);
-      if (url.search) {
-        // Remove parâmetros desnecessários
-        url.search = '';
-        window.location.href = url.toString() + window.location.hash;
-      }
-
-      function scrollToFAQ() {
-        const target = document.querySelector(window.location.hash);
-        if (target) {
-          target.scrollIntoView({ behavior: "smooth" });
+      function cleanURL() {
+        const url = new URL(window.location.href);
+        if (url.search) {
+          url.search = ''; // Remove todos os parâmetros
+          window.history.replaceState(null, "", url.toString() + window.location.hash);
         }
       }
 
-      // Verifica se o hash está presente na URL
-      if (window.location.hash) {
+      function activateAndScrollToSection() {
+        const hash = window.location.hash;
+        if (hash) {
+          const sections = hash.split(","); // Permite múltiplas seções: #faq,#section1,#section2
+          sections.forEach(section => {
+            const target = document.querySelector(section.trim());
+            if (target) {
+              target.style.display = "block"; // Garante que a seção está visível
+              target.scrollIntoView({ behavior: "smooth" });
+            } else {
+              console.warn(`Seção ${section} não encontrada. Continuando a monitorar...`);
+              monitorSection(section.trim());
+            }
+          });
+        }
+      }
+
+      function monitorSection(section) {
         const observer = new MutationObserver(() => {
-          if (document.querySelector(window.location.hash)) {
+          const target = document.querySelector(section);
+          if (target) {
             observer.disconnect();
-            scrollToFAQ();
+            target.style.display = "block"; // Garante que a seção está visível
+            target.scrollIntoView({ behavior: "smooth" });
           }
         });
 
@@ -35,6 +47,12 @@
           childList: true,
           subtree: true
         });
+      }
+
+      // Limpa a URL e ativa o monitoramento
+      cleanURL();
+      if (window.location.hash) {
+        activateAndScrollToSection();
       }
     });
   </script>
