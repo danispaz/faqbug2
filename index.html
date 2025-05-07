@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Script de FAQ - Scroll Automático</title>
+</head>
+<body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (window.location.hash) {
+        setTimeout(() => {
+          const target = document.querySelector(window.location.hash);
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth" });
+          }
+        }, 500);
+      }
+    });
+  </script>
+</body>
+</html>
