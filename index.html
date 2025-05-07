@@ -3,18 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Script de FAQ - Scroll Automático</title>
+  <title>Script de FAQ - Scroll Automático Inteligente</title>
 </head>
 <body>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
+      function scrollToFAQ() {
+        const target = document.querySelector(window.location.hash);
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+
+      // Verifica se o hash está presente na URL
       if (window.location.hash) {
-        setTimeout(() => {
-          const target = document.querySelector(window.location.hash);
-          if (target) {
-            target.scrollIntoView({ behavior: "smooth" });
+        const observer = new MutationObserver(() => {
+          if (document.querySelector(window.location.hash)) {
+            observer.disconnect(); // Para de monitorar assim que encontra
+            scrollToFAQ();
           }
-        }, 500);
+        });
+
+        // Monitora o corpo do documento por mudanças
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
       }
     });
   </script>
