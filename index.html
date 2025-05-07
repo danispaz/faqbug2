@@ -8,6 +8,13 @@
 <body>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
+      const url = new URL(window.location.href);
+      if (url.search) {
+        // Remove parâmetros desnecessários
+        url.search = '';
+        window.location.href = url.toString() + window.location.hash;
+      }
+
       function scrollToFAQ() {
         const target = document.querySelector(window.location.hash);
         if (target) {
@@ -19,12 +26,11 @@
       if (window.location.hash) {
         const observer = new MutationObserver(() => {
           if (document.querySelector(window.location.hash)) {
-            observer.disconnect(); // Para de monitorar assim que encontra
+            observer.disconnect();
             scrollToFAQ();
           }
         });
 
-        // Monitora o corpo do documento por mudanças
         observer.observe(document.body, {
           childList: true,
           subtree: true
